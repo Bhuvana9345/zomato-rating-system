@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | FlavorVault</title>
+  <meta name="description" content="Login to FlavorVault to rate and review your favorite restaurants.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Simple nav with just logo and theme toggle -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">FlavorVault</span>
+      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="auth-page">
+    <div class="auth-container animate-fadeIn">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">🍽️</div>
+          <h1>Welcome Back</h1>
+          <p>Sign in to continue to FlavorVault</p>
+        </div>
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+            <span class="form-error" id="emailError"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+            <span class="form-error" id="passwordError"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">Sign In</button>
+        </form>
+        <div class="auth-footer">
+          <p>Don't have an account? <a href="signup.html">Create one</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    // Initialize theme
+    Utils.initThemeToggle();
+
+    // If already logged in, redirect to home
+    if (Auth.isAuthenticated()) {
+      window.location.href = 'index.html';
+    }
+
+    // Login form handler
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      // Clear previous errors
+      document.getElementById('emailError').textContent = '';
+      document.getElementById('passwordError').textContent = '';
+
+      // Basic validation
+      let valid = true;
+      if (!email) {
+        document.getElementById('emailError').textContent = 'Email is required';
+        valid = false;
+      }
+      if (!password) {
+        document.getElementById('passwordError').textContent = 'Password is required';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      const result = Auth.login(email, password);
+      if (result.success) {
+        Utils.showToast('Welcome back! Redirecting...', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+      } else {
+        Utils.showToast(result.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

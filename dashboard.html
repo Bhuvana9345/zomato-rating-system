@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | FlavorVault</title>
+  <meta name="description" content="Manage your reviews and profile on FlavorVault.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Dashboard Page ── */
+    .dashboard-page {
+      padding-top: calc(var(--navbar-height, 72px) + 40px);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* ── Dashboard Header ── */
+    .dashboard-header {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 32px;
+      border-radius: var(--radius-xl, 20px);
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
+    }
+
+    .dashboard-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .dashboard-info h1 {
+      font-family: var(--font-heading, 'Outfit', sans-serif);
+      font-size: 1.8rem;
+      margin: 0 0 4px;
+      color: var(--text-primary, #f3f4f6);
+    }
+
+    .dashboard-info p {
+      color: var(--text-secondary, #9ca3af);
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    /* ── Stats Grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 20px;
+      border-radius: var(--radius-lg, 16px);
+      text-align: center;
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--font-heading, 'Outfit', sans-serif);
+      color: var(--primary, #8b5cf6);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      color: var(--text-secondary, #9ca3af);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    /* ── Tabs ── */
+    .dashboard-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+      padding-bottom: 0;
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary, #9ca3af);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary, #f3f4f6);
+    }
+
+    .tab-btn.active {
+      color: var(--primary, #8b5cf6);
+      border-bottom-color: var(--primary, #8b5cf6);
+    }
+
+    /* ── User Review Card ── */
+    .user-review-card {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px;
+      border-radius: var(--radius-lg, 16px);
+      margin-bottom: 16px;
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .user-review-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .user-review-restaurant {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .user-review-restaurant-image {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .user-review-restaurant-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .user-review-restaurant-name {
+      color: var(--text-primary, #f3f4f6);
+      text-decoration: none;
+      font-weight: 600;
+      font-family: var(--font-heading, 'Outfit', sans-serif);
+      transition: color 0.2s;
+    }
+
+    .user-review-restaurant-name:hover {
+      color: var(--primary, #8b5cf6);
+    }
+
+    .user-review-restaurant-cuisine {
+      color: var(--text-secondary, #9ca3af);
+      font-size: 0.85rem;
+    }
+
+    .user-review-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+    }
+
+    /* ── Activity Timeline ── */
+    .activity-timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .activity-item {
+      position: relative;
+      margin-bottom: 24px;
+      padding-left: 20px;
+    }
+
+    .activity-dot {
+      position: absolute;
+      left: -24px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary, #8b5cf6);
+      border: 3px solid var(--bg-primary, #0f0f1a);
+      box-shadow: 0 0 0 2px var(--primary, #8b5cf6);
+    }
+
+    .activity-item::before {
+      content: '';
+      position: absolute;
+      left: -19px;
+      top: 20px;
+      width: 2px;
+      height: calc(100% + 4px);
+      background: var(--border-glass, rgba(255,255,255,0.08));
+    }
+
+    .activity-item:last-child::before {
+      display: none;
+    }
+
+    .activity-content {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 16px 20px;
+      border-radius: var(--radius-lg, 16px);
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+    }
+
+    .activity-text {
+      margin: 0 0 4px;
+      color: var(--text-primary, #f3f4f6);
+      font-size: 0.95rem;
+    }
+
+    .activity-text a {
+      color: var(--primary, #8b5cf6);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .activity-text a:hover {
+      text-decoration: underline;
+    }
+
+    .activity-date {
+      color: var(--text-muted, #6b7280);
+      font-size: 0.8rem;
+    }
+
+    /* ── Review textarea in modals ── */
+    .review-textarea {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      border-radius: var(--radius-md, 12px);
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+      resize: vertical;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-primary, #f3f4f6);
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .review-textarea:focus {
+      outline: none;
+      border-color: var(--primary, #8b5cf6);
+    }
+
+    /* ── Star Select (for edit modal) ── */
+    .star-select-area {
+      display: flex;
+      gap: 6px;
+      margin: 12px 0;
+    }
+
+    .star-select {
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--star-empty, #4b5563);
+      transition: color 0.15s, transform 0.15s;
+      user-select: none;
+    }
+
+    .star-select:hover {
+      transform: scale(1.15);
+    }
+
+    .star-select.active,
+    .star-select.selected {
+      color: var(--star-filled, #fbbf24);
+    }
+
+    .settings-card {
+      background: var(--bg-card, rgba(255,255,255,0.06));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 32px;
+      border-radius: var(--radius-lg, 16px);
+      border: 1px solid var(--border-glass, rgba(255,255,255,0.08));
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-info h1 {
+        font-size: 1.4rem;
+      }
+
+      .user-review-restaurant {
+        flex-wrap: wrap;
+      }
+
+      .user-review-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .tab-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">FlavorVault</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <div class="nav-user" id="navUser"></div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <main class="dashboard-page">
+    <div class="container">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header" id="dashboardHeader"></div>
+
+      <!-- Dashboard Tabs -->
+      <div class="dashboard-tabs" id="dashboardTabs">
+        <button class="tab-btn active" data-tab="reviews">My Reviews</button>
+        <button class="tab-btn" data-tab="activity">Recent Activity</button>
+        <button class="tab-btn" data-tab="settings">Profile Settings</button>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content" id="dashboardContent"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>🍽️ FlavorVault</h3>
+          <p>Your ultimate restaurant discovery platform.</p>
+          <p style="margin-top: 12px; font-weight: 600; font-size: 0.9rem; color: var(--text-primary);">📞 Helpline: 9345755706</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 FlavorVault. Built with ❤️</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

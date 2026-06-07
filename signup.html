@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | FlavorVault</title>
+  <meta name="description" content="Create your FlavorVault account to start rating and reviewing your favorite restaurants.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Simple nav with just logo and theme toggle -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">FlavorVault</span>
+      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="auth-page">
+    <div class="auth-container animate-fadeIn">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">🍽️</div>
+          <h1>Create Your Account</h1>
+          <p>Join FlavorVault to start reviewing restaurants</p>
+        </div>
+        <form id="signupForm" novalidate>
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" id="username" class="form-input" placeholder="Choose a username" required minlength="3" autocomplete="username">
+            <span class="form-error" id="usernameError"></span>
+          </div>
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+            <span class="form-error" id="emailError"></span>
+          </div>
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password">
+            <span class="form-error" id="passwordError"></span>
+          </div>
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter your password" required autocomplete="new-password">
+            <span class="form-error" id="confirmPasswordError"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="signupBtn">Create Account</button>
+        </form>
+        <div class="auth-footer">
+          <p>Already have an account? <a href="login.html">Sign in</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    // Initialize theme
+    Utils.initThemeToggle();
+
+    // If already logged in, redirect to home
+    if (Auth.isAuthenticated()) {
+      window.location.href = 'index.html';
+    }
+
+    // Email format helper
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Signup form handler
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const username        = document.getElementById('username').value.trim();
+      const email           = document.getElementById('email').value.trim();
+      const password        = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Clear previous errors
+      document.getElementById('usernameError').textContent        = '';
+      document.getElementById('emailError').textContent           = '';
+      document.getElementById('passwordError').textContent        = '';
+      document.getElementById('confirmPasswordError').textContent = '';
+
+      // --- Client-side validation ---
+      let valid = true;
+
+      if (!username || username.length < 3) {
+        document.getElementById('usernameError').textContent = 'Username must be at least 3 characters';
+        valid = false;
+      }
+
+      if (!email) {
+        document.getElementById('emailError').textContent = 'Email is required';
+        valid = false;
+      } else if (!isValidEmail(email)) {
+        document.getElementById('emailError').textContent = 'Please enter a valid email address';
+        valid = false;
+      }
+
+      if (!password) {
+        document.getElementById('passwordError').textContent = 'Password is required';
+        valid = false;
+      } else if (password.length < 6) {
+        document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
+        valid = false;
+      }
+
+      if (!confirmPassword) {
+        document.getElementById('confirmPasswordError').textContent = 'Please confirm your password';
+        valid = false;
+      } else if (password !== confirmPassword) {
+        document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // --- Attempt signup via Auth module ---
+      const result = Auth.signup(username, email, password);
+
+      if (result.success) {
+        Utils.showToast('Account created! Redirecting to login...', 'success');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+      } else {
+        Utils.showToast(result.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

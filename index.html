@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlavorVault | Discover & Review Amazing Restaurants</title>
+  <meta name="description" content="FlavorVault - Your ultimate destination to discover, rate, and review the best restaurants. Find your next favorite dining spot.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Page-specific styles for home page elements not covered in shared CSS -->
+  <style>
+    /* ── Hero Stats ── */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .hero-stat-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--gradient-primary, linear-gradient(135deg, #ff6b35, #f7c948));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary, #94a3b8);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── Text Gradient ── */
+    .text-gradient {
+      background: var(--gradient-primary, linear-gradient(135deg, #ff6b35, #f7c948));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Card Image Emoji ── */
+    .card-image-emoji {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3.5rem;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      z-index: 1;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .restaurant-card:hover .card-image-emoji {
+      transform: translate(-50%, -50%) scale(1.2) rotate(-5deg);
+    }
+
+    .card-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Section & Section Header ── */
+    .section {
+      padding: 4rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Featured Section ── */
+    .featured-section {
+      background: var(--bg-secondary, #0f172a);
+      border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+      border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+    }
+
+    .featured-grid {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color, #ff6b35) transparent;
+    }
+
+    .featured-grid::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .featured-grid::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .featured-grid::-webkit-scrollbar-thumb {
+      background: var(--primary-color, #ff6b35);
+      border-radius: 3px;
+    }
+
+    .featured-card {
+      min-width: 280px;
+      max-width: 320px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      background: var(--card-bg, rgba(255, 255, 255, 0.04));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+      border-radius: 1.25rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    }
+
+    .featured-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(255, 107, 53, 0.15);
+      border-color: var(--primary-color, #ff6b35);
+    }
+
+    .featured-image {
+      position: relative;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .featured-emoji {
+      font-size: 4rem;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .featured-card:hover .featured-emoji {
+      transform: scale(1.15) rotate(-8deg);
+    }
+
+    .featured-info {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .featured-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary, #f1f5f9);
+      margin: 0;
+    }
+
+    .featured-cuisine {
+      font-size: 0.8rem;
+      color: var(--primary-color, #ff6b35);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .featured-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f7c948;
+      margin-top: 0.25rem;
+    }
+
+    /* ── Footer Extras ── */
+    .footer-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary, #f1f5f9);
+      margin-bottom: 1rem;
+    }
+
+    .footer-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary, #94a3b8);
+      line-height: 1.6;
+      max-width: 300px;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-links li a {
+      color: var(--text-secondary, #94a3b8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease, padding-left 0.2s ease;
+    }
+
+    .footer-links li a:hover {
+      color: var(--primary-color, #ff6b35);
+      padding-left: 4px;
+    }
+
+    /* ── Card Rating Stars ── */
+    .card-rating-star {
+      color: #f7c948;
+      font-size: 1rem;
+    }
+
+    .card-rating-value {
+      font-weight: 700;
+      color: var(--text-primary, #f1f5f9);
+      font-size: 0.95rem;
+    }
+
+    .card-rating-count {
+      font-size: 0.8rem;
+      color: var(--text-secondary, #94a3b8);
+      font-weight: 400;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero-stats {
+        gap: 1.5rem;
+      }
+
+      .hero-stat-number {
+        font-size: 1.6rem;
+      }
+
+      .hero-stat-label {
+        font-size: 0.75rem;
+      }
+
+      .section {
+        padding: 2.5rem 0;
+      }
+
+      .featured-card {
+        min-width: 240px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-stats {
+        gap: 1rem;
+      }
+
+      .hero-stat-number {
+        font-size: 1.3rem;
+      }
+
+      .card-image-emoji {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text">FlavorVault</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <div class="nav-user" id="navUser"></div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Discover <span class="text-gradient">Amazing</span> Restaurants</h1>
+      <p class="hero-subtitle">Rate, review, and find the best dining experiences in your city</p>
+      <div class="hero-search">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="heroSearch" placeholder="Search restaurants, cuisines, or dishes..." autocomplete="off">
+        </div>
+      </div>
+      <!-- Stats row under search -->
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="totalRestaurants">12</span>
+          <span class="hero-stat-label">Restaurants</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="totalReviews">0</span>
+          <span class="hero-stat-label">Reviews</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number" id="totalCuisines">0</span>
+          <span class="hero-stat-label">Cuisines</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="section" id="filterSection">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Explore Restaurants</h2>
+        <p class="section-subtitle">Find your perfect dining spot from our curated selection</p>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <!-- Filter buttons populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Restaurant Grid -->
+  <section class="section" id="restaurantsSection">
+    <div class="container">
+      <div class="restaurants-grid" id="restaurantsGrid">
+        <!-- Cards populated by JS -->
+      </div>
+      <!-- Empty state when no results -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">🔍</div>
+        <h3 class="empty-title">No restaurants found</h3>
+        <p class="empty-text">Try adjusting your search or filter criteria</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Section -->
+  <section class="section featured-section" id="featuredSection">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">⭐ Featured Picks</h2>
+        <p class="section-subtitle">Handpicked restaurants loved by our community</p>
+      </div>
+      <div class="featured-grid" id="featuredGrid">
+        <!-- Featured cards populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">🍽️ FlavorVault</h3>
+          <p class="footer-text">Your ultimate restaurant discovery platform. Rate, review, and share your dining experiences.</p>
+          <p class="footer-text" style="margin-top: 12px; font-weight: 600; color: var(--text-primary);">📞 Helpline: 9345755706</p>
+        </div>
+        <div class="footer-section">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="signup.html">Sign Up</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3 class="footer-title">Cuisines</h3>
+          <ul class="footer-links">
+            <li><a href="#">Indian</a></li>
+            <li><a href="#">Italian</a></li>
+            <li><a href="#">Japanese</a></li>
+            <li><a href="#">Mexican</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 FlavorVault. Built with ❤️ for food lovers.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast & Modal -->
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

@@ -5,7 +5,8 @@ FlavorVault is a premium, production-quality restaurant discovery, rating, and r
 Designed with a sleek dark-first interface, glassmorphism, responsive grids, and clean animations, it serves as an excellent portfolio-grade showcase of modern web engineering without dependencies.
 
 ---
-
+Live Demo Link
+   https://bhuvana9345.github.io/zomato-rating-system/
 ## 🌟 Key Features
 
 ### 1. Robust Authentication & Session Guarding
